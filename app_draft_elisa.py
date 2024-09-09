@@ -21,15 +21,29 @@ st.markdown("""
         font-family: 'Arial', sans-serif;
     }
     .stButton>button {
-        background-color: marineblue;
+        background-color: #003366; /* Marine blue */
         color: white;
         border: none;
+        font-size: 20px;
+        padding: 20px;
+        width: 100%;
+        text-align: center;
+        cursor: pointer;
+        display: block;
+        margin: 10px auto;
     }
     .stButton>button:hover {
-        background-color: #003366;
+        background-color: #002244; /* Darker marine blue */
+    }
+    .stSelectbox>div>div>div>div {
+        font-size: 18px;
     }
     </style>
 """, unsafe_allow_html=True)
+
+# Initialize session state
+if 'analysis_type' not in st.session_state:
+    st.session_state.analysis_type = None
 
 def return_df(file):
     name = file.name
@@ -72,64 +86,76 @@ test_items = [
 ]
 carousel(items=test_items)
 
-# User choice
+# User choice between options
 st.markdown("<h2 class='header'>Choose an Analysis Type:</h2>", unsafe_allow_html=True)
-analysis_type = st.radio("", ('Tabular Data Analysis', 'Medical Imaging Pipeline'), index=0, key="analysis_choice")
 
-if analysis_type == 'Tabular Data Analysis':
-    st.write("You chose Tabular Data Analysis.")
-    
-    # File uploader
-    f = st.file_uploader("Please upload the dataset", type=["csv", "tsv", "xlsx", "xml", "json"])
+col1, col2 = st.columns(2)
 
-    if f:
-        df = return_df(f)
-        st.success("File Uploaded!")
-        st.write("Dataset preview:")
-        st.dataframe(df)
+with col1:
+    if st.button("Tabular Data Analysis", key="tabular_data"):
+        st.session_state.analysis_type = 'Tabular Data Analysis'
 
-        # Task type selection (Classification/ Regression)
-        task_type = st.radio("Select task type", ('Classification', 'Regression'))
+with col2:
+    if st.button("Medical Imaging Pipeline", key="imaging_pipeline"):
+        st.session_state.analysis_type = 'Medical Imaging Pipeline'
 
-        # Select target variable
-        target_variable = st.selectbox("Select the target variable", df.columns)
+# Content area that changes based on the user's choice
+content_area = st.empty()
 
-        # Model selection
-        st.write("Select models for grid search")
-        models = st.multiselect("Choose models", ['Logistic Regression', 'Random Forest', 'SVM', 'KNN', 'Linear Regression'])
+if st.session_state.analysis_type == 'Tabular Data Analysis':
+    with content_area.container():
+        # File uploader for tabular data
+        f = st.file_uploader("Please upload the dataset", type=["csv", "tsv", "xlsx", "xml", "json"])
 
-        # Create tabs
-        tab1, tab2 = st.tabs(["EDA", "3D Visualization and Prediction"])
+        if f:
+            df = return_df(f)
+            st.success("File Uploaded!")
+            st.write("Dataset preview:")
+            st.dataframe(df)
 
-        with tab1:
-            # EDA Tab
-            pr = ProfileReport(df)
-            st_profile_report(pr)
+            # Task type selection (Classification/ Regression)
+            task_type = st.radio("Select task type", ('Classification', 'Regression'))
 
-        with tab2:
-            # 3D Visualization and Prediction Tab
-            col_fea1, col_fea2, col_fea3, col_target = st.columns(4)
-            with col_fea1:
-                fea1 = st.selectbox("Please select the first feature", df.columns)
-            with col_fea2:
-                fea2 = st.selectbox("Please select the second feature", df.columns)
-            with col_fea3:
-                fea3 = st.selectbox("Please select the third feature", df.columns)
-            with col_target:
-                target = st.selectbox("Please select the target", df.columns)
-            
-            # 3D Plot
-            fig_3d = px.scatter_3d(df, x=fea1, y=fea2, z=fea3, color=target)
-            st.plotly_chart(fig_3d)
+            # Select target variable
+            target_variable = st.selectbox("Select the target variable", df.columns)
 
-            # Personalized Input and Prediction
-            st.subheader("Personalized Input")
-            smoking_status = st.radio("Do you smoke?", ('Yes', 'No'))
-            st.write(f"Selected smoking status: {smoking_status}")
-            
-            # Placeholder for prediction logic
-            # Replace this with your actual model and prediction logic
-            st.write("Prediction results will be displayed here.")
-    
-elif analysis_type == 'Medical Imaging Pipeline':
-    st.write("Medical Imaging Pipeline functionality has to be implemented.")
+            # Model selection
+            st.write("Select models for grid search")
+            models = st.multiselect("Choose models", ['Logistic Regression', 'Random Forest', 'SVM', 'KNN', 'Linear Regression'])
+
+            # Create tabs
+            tab1, tab2 = st.tabs(["EDA", "3D Visualization and Prediction"])
+
+            with tab1:
+                # EDA Tab
+                pr = ProfileReport(df)
+                st_profile_report(pr)
+
+            with tab2:
+                # 3D Visualization and Prediction Tab
+                col_fea1, col_fea2, col_fea3, col_target = st.columns(4)
+                with col_fea1:
+                    fea1 = st.selectbox("Please select the first feature", df.columns)
+                with col_fea2:
+                    fea2 = st.selectbox("Please select the second feature", df.columns)
+                with col_fea3:
+                    fea3 = st.selectbox("Please select the third feature", df.columns)
+                with col_target:
+                    target = st.selectbox("Please select the target", df.columns)
+                
+                # 3D Plot
+                fig_3d = px.scatter_3d(df, x=fea1, y=fea2, z=fea3, color=target)
+                st.plotly_chart(fig_3d)
+
+                # Personalized Input and Prediction
+                st.subheader("Personalized Input")
+                smoking_status = st.radio("Do you smoke?", ('Yes', 'No'))
+                st.write(f"Selected smoking status: {smoking_status}")
+                
+                # Placeholder for prediction logic
+                # Replace this with your actual model and prediction logic
+                st.write("Prediction results will be displayed here.")
+
+elif st.session_state.analysis_type == 'Medical Imaging Pipeline':
+    with content_area.container():
+        st.write("Medical Imaging Pipeline functionality has to be implemented.")
