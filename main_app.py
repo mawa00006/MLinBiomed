@@ -1,9 +1,9 @@
 import streamlit as st
 from streamlit_carousel import carousel
-import pandas as pd
-from ydata_profiling import ProfileReport
-from streamlit_pandas_profiling import st_profile_report
 import plotly.express as px
+from streamlit_pandas_profiling import st_profile_report
+from ydata_profiling import ProfileReport
+import app_helper
 
 # Define the styling for the app
 st.markdown("""
@@ -45,21 +45,7 @@ st.markdown("""
 if 'analysis_type' not in st.session_state:
     st.session_state.analysis_type = None
 
-def return_df(file):
-    name = file.name
-    extension = name.split(".")[-1]
-    if extension == "csv":
-        df = pd.read_csv(name)
-    elif extension == "tsv":
-        df = pd.read_csv(name, sep="\t")
-    elif extension == "xlsx":
-        df = pd.read_excel(name)
-    elif extension == "xml":
-        df = pd.read_xml(name)
-    elif extension == "json":
-        df = pd.read_json(name)
-    return df
-
+# Title and welcome message
 st.title("Heart Stroke Analysis")
 st.write("Welcome to the analysis tool. Choose an option below to get started.")
 
@@ -108,7 +94,8 @@ if st.session_state.analysis_type == 'Tabular Data Analysis':
         f = st.file_uploader("Please upload the dataset", type=["csv", "tsv", "xlsx", "xml", "json"])
 
         if f:
-            df = return_df(f)
+            # Use helper function to read the file
+            df = app_helper.return_df(f)
             st.success("File Uploaded!")
             st.write("Dataset preview:")
             st.dataframe(df)
@@ -127,7 +114,7 @@ if st.session_state.analysis_type == 'Tabular Data Analysis':
             tab1, tab2 = st.tabs(["EDA", "3D Visualization and Prediction"])
 
             with tab1:
-                # EDA Tab
+                # EDA Tab using helper function for profiling report
                 pr = ProfileReport(df)
                 st_profile_report(pr)
 
@@ -153,7 +140,6 @@ if st.session_state.analysis_type == 'Tabular Data Analysis':
                 st.write(f"Selected smoking status: {smoking_status}")
                 
                 # Placeholder for prediction logic
-                # Replace this with your actual model and prediction logic
                 st.write("Prediction results will be displayed here.")
 
 elif st.session_state.analysis_type == 'Medical Imaging Pipeline':
