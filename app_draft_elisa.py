@@ -1,9 +1,35 @@
 import streamlit as st
+from streamlit_carousel import carousel
 import pandas as pd
 from ydata_profiling import ProfileReport
 from streamlit_pandas_profiling import st_profile_report
 import plotly.express as px
 
+# Define the styling for the app
+st.markdown("""
+    <style>
+    .title {
+        color: marineblue;
+        font-family: 'Arial', sans-serif;
+    }
+    .header {
+        color: marineblue;
+        font-family: 'Arial', sans-serif;
+    }
+    .text {
+        color: black;
+        font-family: 'Arial', sans-serif;
+    }
+    .stButton>button {
+        background-color: marineblue;
+        color: white;
+        border: none;
+    }
+    .stButton>button:hover {
+        background-color: #003366;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 def return_df(file):
     name = file.name
@@ -11,7 +37,7 @@ def return_df(file):
     if extension == "csv":
         df = pd.read_csv(name)
     elif extension == "tsv":
-        df = pd.read_csv(name, sep ="\t")
+        df = pd.read_csv(name, sep="\t")
     elif extension == "xlsx":
         df = pd.read_excel(name)
     elif extension == "xml":
@@ -20,29 +46,10 @@ def return_df(file):
         df = pd.read_json(name)
     return df
 
-st.title("EDA for Heart Stroke Analysis")
-st.write("This is your first Streamlit app.")
+st.title("Heart Stroke Analysis")
+st.write("Welcome to the analysis tool. Choose an option below to get started.")
 
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.markdown("<h3>Automated Analysis</h3>", unsafe_allow_html = True)
-    st.markdown("<p>Automated Analysis</p>", unsafe_allow_html = True)
-with col2:
-    st.markdown("<h3>Automated Analysis</h3>", unsafe_allow_html = True)
-    st.markdown("<p>Automated Analysis</p>", unsafe_allow_html = True)
-with col3:
-    st.markdown("<h3>Automated Analysis</h3>", unsafe_allow_html = True)
-    st.markdown("<p>Automated Analysis</p>", unsafe_allow_html = True)
-
-
-
-st.video("https://www.youtube.com/watch?v=3_PYnWVoUzM")
-
-
-
-from streamlit_carousel import carousel
-
+# Display the carousel
 test_items = [
     dict(
         title="Slide 1",
@@ -63,45 +70,66 @@ test_items = [
         link="https://static.startuptalky.com/2021/05/ml-in-healthcare-fi-startuptalky.jpg",
     ),
 ]
-
 carousel(items=test_items)
 
-f = st.file_uploader("Please upload the dataset", type=["csv", "tsv", "xlsx", "xml", "json"])
-print(f)
+# User choice
+st.markdown("<h2 class='header'>Choose an Analysis Type:</h2>", unsafe_allow_html=True)
+analysis_type = st.radio("", ('Tabular Data Analysis', 'Medical Imaging Pipeline'), index=0, key="analysis_choice")
 
-if f:
-    df = return_df(f)
-    st.success("File Uploaded!")
-    st.write("Dataset preview:")
-    st.dataframe(df)
+if analysis_type == 'Tabular Data Analysis':
+    st.write("You chose Tabular Data Analysis.")
+    
+    # File uploader
+    f = st.file_uploader("Please upload the dataset", type=["csv", "tsv", "xlsx", "xml", "json"])
 
-    # Task type selection (Classification/ Regression)
-    task_type = st.radio("Select task type", ('Classification', 'Regression'))
+    if f:
+        df = return_df(f)
+        st.success("File Uploaded!")
+        st.write("Dataset preview:")
+        st.dataframe(df)
 
-    # Select target variable
-    target_variable = st.selectbox("Select the target variable", df.columns)
+        # Task type selection (Classification/ Regression)
+        task_type = st.radio("Select task type", ('Classification', 'Regression'))
 
-    # Model selection
-    st.write("Select models for grid search")
-    models = st.multiselect("Choose models", ['Logistic Regression', 'Random Forest', 'SVM', 'KNN', 'Linear Regression'])
+        # Select target variable
+        target_variable = st.selectbox("Select the target variable", df.columns)
 
-    tab1, tab2 = st.tabs(["EDA", "3D Visualization"])
+        # Model selection
+        st.write("Select models for grid search")
+        models = st.multiselect("Choose models", ['Logistic Regression', 'Random Forest', 'SVM', 'KNN', 'Linear Regression'])
 
-    with tab1:
-        pr = ProfileReport(df)
-        st_profile_report(pr)
-    with tab2:
-        col_fea1,col_fea2,col_fea3,col_target = st.columns(4)
-        with col_fea1:
-            fea1 = st.selectbox("Please select the first feature",df.columns)
-        with col_fea2:
-            fea2 = st.selectbox("Please select the second feature",df.columns)
-        with col_fea3:
-            fea3 = st.selectbox("Please select the third feature",df.columns)
-        with col_target:
-            target = st.selectbox("Please select the target",df.columns)
-        
+        # Create tabs
+        tab1, tab2 = st.tabs(["EDA", "3D Visualization and Prediction"])
 
-        fig_3d = px.scatter_3d(df, x=fea1,y=fea2,z=fea3,color=target)
+        with tab1:
+            # EDA Tab
+            pr = ProfileReport(df)
+            st_profile_report(pr)
 
-        st.plotly_chart(fig_3d)
+        with tab2:
+            # 3D Visualization and Prediction Tab
+            col_fea1, col_fea2, col_fea3, col_target = st.columns(4)
+            with col_fea1:
+                fea1 = st.selectbox("Please select the first feature", df.columns)
+            with col_fea2:
+                fea2 = st.selectbox("Please select the second feature", df.columns)
+            with col_fea3:
+                fea3 = st.selectbox("Please select the third feature", df.columns)
+            with col_target:
+                target = st.selectbox("Please select the target", df.columns)
+            
+            # 3D Plot
+            fig_3d = px.scatter_3d(df, x=fea1, y=fea2, z=fea3, color=target)
+            st.plotly_chart(fig_3d)
+
+            # Personalized Input and Prediction
+            st.subheader("Personalized Input")
+            smoking_status = st.radio("Do you smoke?", ('Yes', 'No'))
+            st.write(f"Selected smoking status: {smoking_status}")
+            
+            # Placeholder for prediction logic
+            # Replace this with your actual model and prediction logic
+            st.write("Prediction results will be displayed here.")
+    
+elif analysis_type == 'Medical Imaging Pipeline':
+    st.write("Medical Imaging Pipeline functionality has to be implemented.")
