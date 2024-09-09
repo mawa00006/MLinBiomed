@@ -10,6 +10,7 @@
 ```bash
 conda activate streamlit_env
 streamlit run app_draft_elisa.py 
+``` 
 
 
 # Notes Elisa
