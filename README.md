@@ -5,6 +5,13 @@
 - modify requirements.txt in the end for upload of assignment
 
 
+# Run app with
+
+```bash
+conda activate streamlit_env
+streamlit run app_draft_elisa.py 
+
+
 # Notes Elisa
 
 - stroke = Schlaganfall
