@@ -17,6 +17,7 @@ import numpy as np
 import torch.optim as optim
 import matplotlib.pyplot as plt
 import torchvision.transforms as transforms
+import wandb
 
 from model.Model import Model, Model2
 from dataset.Dataset import MedMNIST2D
@@ -56,13 +57,13 @@ def train(model, optimizer, train_loader, val_loader, args):
             #    print(outputs, targets)
 
         avg_loss = epoch_loss / (i + 1)
-            #wandb.log({"train-loss": avg_loss})
+        wandb.log({"train-loss": avg_loss})
         print("Train_loss:", avg_loss.item())
 
         if epoch % args.eval_every == 0:
-                eval_loss = evaluation_loop(model, val_loader)
+                eval_loss, eval_acc = evaluation_loop(model, val_loader)
                 print("eval_loss:", eval_loss.item())
-                #wandb.log({"eval-loss": eval_loss})
+                wandb.log({"eval-loss": eval_loss, "eval-acc": eval_acc})
 
         if eval_loss <= best_eval_loss:
                     best_eval_loss = eval_loss
@@ -101,7 +102,7 @@ def evaluation_loop(model, loader):
         avg_acc = running_acc / (i+1)
         print("Eval Acc:", avg_acc)
 
-        return avg_loss
+        return avg_loss, avg_acc
 
 
 def save_checkpoint(model):
@@ -111,6 +112,9 @@ def save_checkpoint(model):
 
 
 def main(args):
+    
+    wandb.init(project="MLBM", name="Model2")
+    
     data_transform = transforms.Compose([
         transforms.ToTensor(),
     ])
