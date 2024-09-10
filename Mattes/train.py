@@ -30,7 +30,7 @@ def train(model, optimizer, train_loader, val_loader, args):
     weight = torch.tensor([4.39, 2.78, 1.3, 12.5, 1.28, 0.21, 10], device=device)
     criterion = nn.CrossEntropyLoss(weight=weight)# weight=
 
-    best_eval_loss = 9999
+    best_eval_acc = 0
 
     for epoch in range(args.epochs):
         epoch_loss = 0
@@ -44,15 +44,15 @@ def train(model, optimizer, train_loader, val_loader, args):
             
             
             optimizer.zero_grad()
-            outputs = model(imgs)
-            #outputs = model(imgs, canny_imgs)
+            #outputs = model(imgs)
+            outputs = model(imgs, canny_imgs)
             loss = criterion(outputs, targets)
 
             loss.backward()
             optimizer.step()
             i+=1
             epoch_loss += loss
-            
+
             #if i == 5:
             #    print(outputs, targets)
 
@@ -65,8 +65,8 @@ def train(model, optimizer, train_loader, val_loader, args):
                 print("eval_loss:", eval_loss.item())
                 wandb.log({"eval-loss": eval_loss, "eval-acc": eval_acc})
 
-        if eval_loss <= best_eval_loss:
-                    best_eval_loss = eval_loss
+        if eval_acc > best_eval_acc:
+                    best_eval_acc= eval_acc
                     save_checkpoint(model)
 
 
@@ -85,8 +85,8 @@ def evaluation_loop(model, loader):
             canny_imgs = canny_imgs.to(device)
             targets = targets.to(device)
 
-            outputs = model(imgs)
-            #outputs = model(imgs, canny_imgs)
+            #outputs = model(imgs)
+            outputs = model(imgs, canny_imgs)
             loss = criterion(outputs, targets)
             
             class_predictions = torch.argmax(outputs, dim=1)
@@ -106,14 +106,14 @@ def evaluation_loop(model, loader):
 
 
 def save_checkpoint(model):
-    out_dir = os.path.join(f"ckpts", f'weights.pt')
+    out_dir = os.path.join(f"ckpts", f'weights1.pt')
     torch.save({"model_state_dict": model.state_dict()}, out_dir)
 
 
 
 def main(args):
     
-    wandb.init(project="MLBM", name="Model2")
+    wandb.init(project="MLBM", name="Model1")
     
     data_transform = transforms.Compose([
         transforms.ToTensor(),
@@ -127,7 +127,7 @@ def main(args):
     val_loader = DataLoader(val_dataset, batch_size=64)
     test_loader = DataLoader(test_dataset)
 
-    model = Model2().to(device)
+    model = Model().to(device)
     optimizer = optim.Adam(model.parameters())
     
 

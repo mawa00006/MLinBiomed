@@ -29,12 +29,12 @@ class Encoder(nn.Module):
     def __init__(self, input_channels) -> None:
         super(Encoder, self).__init__()
         
-        self.ConvUnit1 = ConvUnit(input_channels,8) # 28x28
-        self.ConvUnit2 = ConvUnit(8,16) # 14x14
+        self.ConvUnit1 = ConvUnit(input_channels,16) # 28x28
+        self.ConvUnit2 = ConvUnit(16,32) # 14x14
         
         self.maxpool = nn.MaxPool2d(kernel_size=(2,2), stride=2) 
         
-        self.fc = nn.Sequential(nn.Linear(16*7*7, 1024),
+        self.fc = nn.Sequential(nn.Linear(32*7*7, 1024),
                                 nn.ReLU(),
                                 nn.Dropout(0.2),
                                 nn.Linear(1024, 512),
@@ -71,9 +71,9 @@ class Model(nn.Module):
         self.query_transform = nn.Linear(256, 256)
         self.value_transform = nn.Linear(256, 256)
         
-        self.fc = nn.sequential(nn.Linear(256,7),
-                                nn.ReLU()
-        )
+        self.fc = nn.Linear(256,7)
+        self.out = nn.Linear(512,7)
+                              
 
 
 
@@ -83,15 +83,17 @@ class Model(nn.Module):
         img_encoding = self.ImageEncoder(imgs)
         canny_encoding = self.CannyEncoder(canny_imgs)
         
-        key = self.key_transform(img_encoding)
-        query = self.key_transform(canny_encoding)
-        value = self.key_transform(img_encoding)
+        #key = self.key_transform(img_encoding)
+        #query = self.key_transform(canny_encoding)
+        #value = self.key_transform(img_encoding)
         
-        cross_attn_output, attn_output_weights = self.CrossAttention(query, key, value)
+        #cross_attn_output, attn_output_weights = self.CrossAttention(query, key, value)
         
-        cross_attn_output.flatten()
-        out = self.fc(cross_attn_output)
+        #cross_attn_output.flatten()
+        #out = self.fc(cross_attn_output)
         
+        combined = torch.cat((img_encoding, canny_encoding), dim=1)
+        out = self.out(combined)
 
         return out
     
