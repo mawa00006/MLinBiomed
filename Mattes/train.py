@@ -52,8 +52,6 @@ def train(model, optimizer, train_loader, val_loader, args):
             i+=1
             epoch_loss += loss
             
-            break
-            
             #if i == 5:
             #    print(outputs, targets)
 
@@ -73,9 +71,10 @@ def train(model, optimizer, train_loader, val_loader, args):
 
 def evaluation_loop(model, loader):
     model.eval()
+    weight = torch.tensor([4.34, 2.78, 1.3, 12.5, 1.28, 0.21, 10], device=device)
     criterion = nn.CrossEntropyLoss()
-
     running_loss = 0
+    running_acc = 0
 
     with torch.no_grad():
         i = 0
@@ -88,11 +87,19 @@ def evaluation_loop(model, loader):
             outputs = model(imgs)
             #outputs = model(imgs, canny_imgs)
             loss = criterion(outputs, targets)
+            
+            class_predictions = torch.argmax(outputs, dim=1)
+            true_classes = torch.argmax(targets, dim=1)
+            correct_predictions = (class_predictions == true_classes)
+            acc = correct_predictions.sum().item() / correct_predictions.size(0)
 
+            running_acc += acc
             running_loss += loss
             i += 1
 
         avg_loss = running_loss / (i + 1)
+        avg_acc = running_acc / (i+1)
+        print("Eval Acc:", avg_acc)
 
         return avg_loss
 
@@ -112,7 +119,7 @@ def main(args):
     val_dataset = MedMNIST2D(data_path=args.data_path, split='val', transform=data_transform)
     test_dataset = MedMNIST2D(data_path=args.data_path, split='test', transform=data_transform)
 
-    train_loader = DataLoader(train_dataset, batch_size=1)
+    train_loader = DataLoader(train_dataset, batch_size=128)
     val_loader = DataLoader(val_dataset, batch_size=64)
     test_loader = DataLoader(test_dataset)
 
