@@ -104,10 +104,8 @@ class Model2(nn.Module):
         self.ImageEncoder = Encoder(input_channels=3)
         
         self.fc = nn.Linear(256,7)
-        self.softmax= nn.Softmax()
         
     def forward(self, imgs):
         
         out = self.fc(self.ImageEncoder(imgs))
-        out = self.softmax(out)
         return out
