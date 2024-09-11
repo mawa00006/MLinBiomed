@@ -3,10 +3,12 @@
 
 import os
 import cv2
+import torch
 import numpy as np
 from PIL import Image
 from torch.utils.data import Dataset
-from medmnist.info import INFO, HOMEPAGE, DEFAULT_ROOT
+from medmnist import INFO
+import torchvision.transforms as transforms
 
 
 class MedMNIST(Dataset):
@@ -31,7 +33,7 @@ class MedMNIST(Dataset):
         self.size = 28
         self.size_flag = ""
 
-        self.info = INFO[self.flag]
+        self.info = INFO["dermamnist"]
 
         npz_file = np.load(data_path)
 
@@ -77,6 +79,9 @@ class MedMNIST2D(MedMNIST):
             target: np.array of `L` (L=1 for single-label)
         """
         img, target = self.imgs[index], self.labels[index].astype(int)
+        canny_img = torch.from_numpy(cv2.Canny(img, 50, 150)).to(torch.float)
+        canny_img = canny_img.repeat(3,1,1)
+        
         img = Image.fromarray(img)
 
         if self.as_rgb:
@@ -87,8 +92,7 @@ class MedMNIST2D(MedMNIST):
 
         if self.target_transform is not None:
             target = self.target_transform(target)
-
-        # Get edge image
-        canny_img = cv2.Canny(lst, 50, 150)
+        target = torch.from_numpy(target).to(torch.long)
+        target = torch.nn.functional.one_hot(target.flatten(), 7).squeeze().to(torch.float32)
 
         return img, canny_img, target
