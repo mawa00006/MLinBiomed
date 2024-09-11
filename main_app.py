@@ -1,9 +1,17 @@
 import streamlit as st
 from streamlit_carousel import carousel
-import plotly.express as px
 from streamlit_pandas_profiling import st_profile_report
 from ydata_profiling import ProfileReport
-import app_helper
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+import plotly.express as px
+import sklearn
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.metrics import classification_report, mean_squared_error
+import app_helper  # Helper functions
 
 # Define the styling for the app
 st.markdown("""
@@ -88,6 +96,7 @@ with col2:
 # Content area that changes based on the user's choice
 content_area = st.empty()
 
+# Tabular Data Analysis
 if st.session_state.analysis_type == 'Tabular Data Analysis':
     with content_area.container():
         # File uploader for tabular data
@@ -97,50 +106,71 @@ if st.session_state.analysis_type == 'Tabular Data Analysis':
             # Use helper function to read the file
             df = app_helper.return_df(f)
             st.success("File Uploaded!")
+            
+            # EDA Section
+            st.header("### Explorative Data Analysis (EDA)")
+            
+            # Dataset preview
             st.write("Dataset preview:")
             st.dataframe(df)
 
-            # Task type selection (Classification/ Regression)
-            task_type = st.radio("Select task type", ('Classification', 'Regression'))
+            # Univariate analysis with histograms
+            st.subheader("Histograms of Numeric Features")
+            numeric_cols, categorical_cols = app_helper.get_column_types(df)
+            app_helper.plot_numeric_histograms(df, numeric_cols)
+            app_helper.plot_categorical_histograms(df, categorical_cols)
 
+            # Correlation matrix
+            st.subheader("Correlation Matrix")
+            app_helper.plot_correlation_matrix(df)
+
+            # Machine Learning Section
+            st.header("### Machine Learning Models")
+            
             # Select target variable
             target_variable = st.selectbox("Select the target variable", df.columns)
+            st.write(f"You selected **{target_variable}** as the target variable.")
 
-            # Model selection
+            # Select models for grid search
             st.write("Select models for grid search")
-            models = st.multiselect("Choose models", ['Logistic Regression', 'Random Forest', 'SVM', 'KNN', 'Linear Regression'])
+            model_options = ['Logistic Regression', 'Random Forest', 'Linear Regression']
+            selected_models = st.multiselect("Choose models", model_options)
 
-            # Create tabs
-            tab1, tab2 = st.tabs(["EDA", "3D Visualization and Prediction"])
+            if selected_models:
+                # Train/Test Split
+                X, y = app_helper.get_features_and_target(df, target_variable)
+                X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-            with tab1:
-                # EDA Tab using helper function for profiling report
-                pr = ProfileReport(df)
-                st_profile_report(pr)
+                features = [col for col in df.columns if col != target_variable]
+                categorical_columns = [col for col in features if df[col].dtype == 'object']
+                X_train, X_test = app_helper.preprocess_data(X_train, X_test, categorical_columns)
 
-            with tab2:
-                # 3D Visualization and Prediction Tab
-                col_fea1, col_fea2, col_fea3, col_target = st.columns(4)
-                with col_fea1:
-                    fea1 = st.selectbox("Please select the first feature", df.columns)
-                with col_fea2:
-                    fea2 = st.selectbox("Please select the second feature", df.columns)
-                with col_fea3:
-                    fea3 = st.selectbox("Please select the third feature", df.columns)
-                with col_target:
-                    target = st.selectbox("Please select the target", df.columns)
-                
-                # 3D Plot
-                fig_3d = px.scatter_3d(df, x=fea1, y=fea2, z=fea3, color=target)
-                st.plotly_chart(fig_3d)
+                # Train models and show results
+                model_results = app_helper.train_models(selected_models, X_train, y_train, X_test, y_test)
 
-                # Personalized Input and Prediction
-                st.subheader("Personalized Input")
-                smoking_status = st.radio("Do you smoke?", ('Yes', 'No'))
-                st.write(f"Selected smoking status: {smoking_status}")
-                
-                # Placeholder for prediction logic
-                st.write("Prediction results will be displayed here.")
+                for model_name, result in model_results.items():
+                    st.subheader(f"Results for {model_name}")
+                    st.write(result['report'])
+
+                    # Display feature importance for Random Forest
+                    if model_name == 'Random Forest':
+                        st.write("Feature Importance:")
+                        fig = px.bar(x=result['feature_importance'], y=X.columns, labels={'x': 'Importance', 'y': 'Feature'})
+                        st.plotly_chart(fig)
+
+                # Download options for data and models
+                st.download_button(
+                    label="Download Preprocessed Data",
+                    data=app_helper.download_data(X, y),
+                    file_name="preprocessed_data.csv"
+                )
+
+                for model_name, trained_model in model_results.items():
+                    st.download_button(
+                        label=f"Download {model_name} Model",
+                        data=app_helper.download_model(trained_model),
+                        file_name=f"{model_name}_model.pkl"
+                    )
 
 elif st.session_state.analysis_type == 'Medical Imaging Pipeline':
     with content_area.container():
