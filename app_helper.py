@@ -124,17 +124,13 @@ def train_models(selected_models, X_train, y_train, X_test, y_test):
         model = models.get(model_name)
         param_grid = param_grids.get(model_name, {})
         
-        if model:
-            try:
-                # Define the scoring metric based on the model type
-                scoring = 'f1_macro' if model_name != 'Linear Regression' else 'neg_mean_squared_error'
+        scoring = 'f1_macro' if model_name != 'Linear Regression' else 'neg_mean_squared_error'
                 
-                # Train the model with GridSearchCV
-                grid_search = GridSearchCV(model, param_grid, cv=5, scoring=scoring, n_jobs=-1)
-                grid_search.fit(X_train, y_train)
-                best_estimators[model_name] = grid_search.best_estimator_
-            except Exception as e:
-                print(f"Error training model {model_name}: {e}")
+        # Train the model with GridSearchCV
+        grid_search = GridSearchCV(model, param_grid, cv=5, scoring=scoring, n_jobs=-1)
+        grid_search.fit(X_train, y_train)
+        best_estimators[model_name] = grid_search.best_estimator_
+        
 
     results = {}
     for model_name, model in best_estimators.items():
