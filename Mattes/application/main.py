@@ -16,7 +16,7 @@ model = Model()
 model.train()
 
 class_dict = {0: "Actinic keratoses and intraepithelial carcinoma",
-              1: "2asal cell carcinoma",
+              1: "Basal cell carcinoma",
               2: "Benign keratosis-like lesions",
               3: "Dermatofibroma",
               4: "Melanoma",
@@ -31,6 +31,9 @@ def pil_image_to_base64(img):
     img_str = base64.b64encode(buffered.getvalue()).decode()
     return img_str
 
+def convert_df(df):
+    # IMPORTANT: Cache the conversion to prevent computation on every rerun
+    return df.to_csv().encode("utf-8")
 
 st.title('Machine Learning in Biomedicine, SS24')
 
@@ -85,6 +88,9 @@ if zip_file:
         "Predicted Class": predicted_classes
     })
 
+    df = convert_df(df)
+
+    st.download_button("Download predictions", data=df, file_name="predictions.csv", mime="text/csv")
 
     # Create an HTML table to display the image name, image, and predicted class
     table_html = """
