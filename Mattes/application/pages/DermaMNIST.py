@@ -9,8 +9,21 @@ Source Data:
 Philipp Tschandl, Cliff Rosendahl, et al., "The ham10000 dataset, a large collection of multisource dermatoscopic images of common pigmented skin lesions," Scientific data, vol. 5, pp. 180161, 2018.
 
 Noel Codella, Veronica Rotemberg, et al., “Skin Lesion Analysis Toward Melanoma Detection 2018: A Challenge Hosted by the International Skin Imaging Collaboration (ISIC)”, 2018, arXiv:1902.03368.""")
+
 # Class 1
-st.subheader("Class 1: Actinic keratoses and intraepithelial carcinoma")
+st.subheader("Class 0: Actinic keratoses and intraepithelial carcinoma")
+col1, col2 = st.columns([1,3])
+with col1:
+    #carousel(items=test_items)
+    st.image('imgs/0.jpg', use_column_width=True)
+with col2:
+    st.markdown(""" \"Actinic keratosis is an abnormal growth of cells caused by long-term damage from the sun. The small
+     bumps typically appear on the parts of the body that are most exposed to the sun's rays such as the ears, nose, cheeks, temples and bald scalp.
+They are not cancerous, but a small fraction of them will develop into skin cancer (intraepithelial carcinoma).\" 
+    ([Source](https://www.yalemedicine.org/conditions/actinic-keratosis))""")
+
+# Class 1
+st.subheader("Class 1: Basal cell carcinoma")
 col1, col2 = st.columns([1,3])
 with col1:
     #carousel(items=test_items)

@@ -11,3 +11,6 @@ streamlit-pandas-profiling
 ydata-profiling
 openpyxl
 lxml
+torch
+cv2
+PIL
