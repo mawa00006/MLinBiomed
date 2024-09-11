@@ -135,6 +135,9 @@ if st.session_state.analysis_type == 'Tabular Data Analysis':
             selected_models = st.multiselect("Choose models", model_options)
 
             if selected_models:
+                param_grids = app_helper.create_param_grids(selected_models)
+
+            if selected_models and param_grids!={}:
                 # Train/Test Split
                 X, y = app_helper.get_features_and_target(df, target_variable)
                 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
@@ -143,24 +146,23 @@ if st.session_state.analysis_type == 'Tabular Data Analysis':
                 X_train, X_test = app_helper.preprocess_data(X_train, X_test, categorical_columns)
 
                 # Train models and show results
-                model_results = app_helper.train_models(selected_models, X_train, y_train, X_test, y_test)
+                model_results = app_helper.train_models(selected_models, X_train, y_train, X_test, y_test, param_grids)
 
                 for model_name, result in model_results.items():
                     st.subheader(f"Results for {model_name}")
-                    st.write(result['report'])
+                    st.text(result['report'])
 
                     # Display feature importance for Random Forest
                     if model_name == 'Random Forest':
                           feature_importances = result['feature_importance']
                           feature_importance_df = pd.DataFrame({
-                                'Feature': X.columns,
+                                'Feature': X_train.columns,
                                 'Importance': feature_importances
                                 })
                           feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
                           fig = px.bar(feature_importance_df, x='Feature', y='Importance', 
                                        labels={'x': 'Feature', 'y': 'Importance'},
                                        title='Feature Importances')
-                          st.write("Feature Importance:")
                           st.plotly_chart(fig)
 
                 # Download options for data and models
@@ -176,8 +178,9 @@ if st.session_state.analysis_type == 'Tabular Data Analysis':
                         data=app_helper.download_model(trained_model),
                         file_name=f"{model_name}_model.pkl"
                     )
+                    
+                st.write("Tabular data analysis completed!")
 
-            st.write("Tabular data analysis completed!")
 
 elif st.session_state.analysis_type == 'Medical Imaging Pipeline':
     with content_area.container():

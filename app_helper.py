@@ -9,6 +9,7 @@ from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.metrics import classification_report, mean_squared_error
 import matplotlib.pyplot as plt
+from sklearn.model_selection import ParameterGrid
 
 def return_df(file):
     file_extension = file.name.split('.')[-1]
@@ -84,24 +85,35 @@ def get_features_and_target(df, target_variable):
     y = df[target_variable]
     return X, y
 
-def preprocess_data(X_train, X_test, categorical_columns):
-    encoder = OneHotEncoder(handle_unknown='ignore', sparse_output=False)
+# Function to create parameter grids from user input
+def create_param_grids(selected_models):
+    param_grids = {}
     
-    X_train_encoded = encoder.fit_transform(X_train[categorical_columns])
-    X_test_encoded = encoder.transform(X_test[categorical_columns])
+    if 'Logistic Regression' in selected_models:
+        c_values = st.text_input('Logistic Regression - C values (comma-separated)', '0.01,0.1,1,10,100')
+        solver_values = st.text_input('Logistic Regression - Solver values (comma-separated)', 'liblinear,lbfgs')
+        class_weight_values = st.text_input('Logistic Regression - Class Weight values (comma-separated)', 'balanced,None')
+        
+        param_grids['Logistic Regression'] = {
+            'C': [float(x) for x in c_values.split(',')],
+            'solver': solver_values.split(','),
+            'class_weight': class_weight_values.split(',')
+        }
     
-    X_train_encoded_df = pd.DataFrame(X_train_encoded, columns=encoder.get_feature_names_out(categorical_columns))
-    X_test_encoded_df = pd.DataFrame(X_test_encoded, columns=encoder.get_feature_names_out(categorical_columns))
+    if 'Random Forest' in selected_models:
+        n_estimators_values = st.text_input('Random Forest - N Estimators values (comma-separated)', '50,100,200')
+        max_depth_values = st.text_input('Random Forest - Max Depth values (comma-separated)', '5,10,20')
+        class_weight_values = st.text_input('Random Forest - Class Weight values (comma-separated)', 'balanced,None')
+        
+        param_grids['Random Forest'] = {
+            'n_estimators': [int(x) for x in n_estimators_values.split(',')],
+            'max_depth': [int(x) for x in max_depth_values.split(',')],
+            'class_weight': class_weight_values.split(',')
+        }
     
-    X_train = X_train.drop(columns=categorical_columns).reset_index(drop=True)
-    X_test = X_test.drop(columns=categorical_columns).reset_index(drop=True)
-    
-    X_train_encoded_df = pd.concat([X_train, X_train_encoded_df], axis=1)
-    X_test_encoded_df = pd.concat([X_test, X_test_encoded_df], axis=1)
-    
-    return X_train_encoded_df, X_test_encoded_df
+    return param_grids
 
-def train_models(selected_models, X_train, y_train, X_test, y_test):
+def train_models(selected_models, X_train, y_train, X_test, y_test, param_grids):
     # Import required modules
     from sklearn.linear_model import LogisticRegression, LinearRegression
     from sklearn.ensemble import RandomForestClassifier
@@ -109,7 +121,7 @@ def train_models(selected_models, X_train, y_train, X_test, y_test):
     from sklearn.model_selection import GridSearchCV
 
     # Initialize dictionaries to store parameter grids and models
-    param_grids = {
+    """param_grids = {
         'Logistic Regression': {
             'C': [0.01, 0.1, 1, 10, 100],
             'solver': ['liblinear', 'lbfgs'],
@@ -120,7 +132,7 @@ def train_models(selected_models, X_train, y_train, X_test, y_test):
             'max_depth': [5, 10, 20],
             'class_weight': ['balanced', None]
         }
-    }
+    }"""
     
     models = {
         'Logistic Regression': LogisticRegression(max_iter=1000),
@@ -133,7 +145,6 @@ def train_models(selected_models, X_train, y_train, X_test, y_test):
     for model_name in selected_models:
         model = models.get(model_name)
         param_grid = param_grids.get(model_name, {})
-        
         scoring = 'f1_macro' if model_name != 'Linear Regression' else 'neg_mean_squared_error'
                 
         # Train the model with GridSearchCV
@@ -155,9 +166,9 @@ def train_models(selected_models, X_train, y_train, X_test, y_test):
                 # Ensure that feature importances are correctly extracted and correspond to features
                 if hasattr(model, 'feature_importances_'):
                     feature_importances = model.feature_importances_
-                    assert len(feature_importances) == len(X.columns), "Mismatch in feature importance and feature columns length"
                 else: 
                     feature_importances = None
+                
                 results[model_name] = {
                     'report': classification_report(y_test, y_pred),
                     'model': model,
