@@ -106,7 +106,7 @@ if st.session_state.analysis_type == 'Tabular Data Analysis':
             st.success("File Uploaded!")
             
             # EDA Section
-            st.header("### Explorative Data Analysis (EDA)")
+            st.header("Explorative Data Analysis (EDA)")
             
             # Dataset preview
             st.write("Dataset preview:")
@@ -123,7 +123,7 @@ if st.session_state.analysis_type == 'Tabular Data Analysis':
             app_helper.plot_correlation_matrix(df)
 
             # Machine Learning Section
-            st.header("### Machine Learning Models")
+            st.header("Machine Learning Models")
             
             # Select target variable
             target_variable = st.selectbox("Select the target variable", df.columns)

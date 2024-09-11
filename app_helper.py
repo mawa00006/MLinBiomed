@@ -30,27 +30,37 @@ def get_column_types(df):
     categorical_cols = df.select_dtypes(include=['object']).columns.tolist()
     return numeric_cols, categorical_cols
 
+
 def plot_numeric_histograms(df, numeric_cols):
     if numeric_cols:
-        df[numeric_cols].hist(bins=30, figsize=(15, 10), color='skyblue', edgecolor='black', grid=False)
+        fig, ax = plt.subplots(figsize=(15, 10))
+        df[numeric_cols].hist(bins=30, color='skyblue', edgecolor='black', grid=False, ax=ax)
         plt.tight_layout()
-        st.pyplot()
+        st.pyplot(fig)
+
 
 def plot_categorical_histograms(df, categorical_cols):
-    for col in categorical_cols:
-        df[col].value_counts().plot(kind='bar', figsize=(10, 5))
-        plt.title(f'Bar plot of {col}')
-        plt.xlabel(col)
-        plt.ylabel('Frequency')
-        st.pyplot()
+    if categorical_cols:
+        fig, axes = plt.subplots(nrows=3, ncols=2, figsize=(15, 12))
+        axes = axes.flatten()
+        for i, col in enumerate(categorical_cols):
+            ax = axes[i]
+            df[col].value_counts().plot(kind='bar', color='skyblue', edgecolor='black', ax=ax)
+            ax.set_title(f'Distribution of {col}')
+            ax.set_ylabel('Count')
+            ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+        for j in range(i + 1, len(axes)):
+            fig.delaxes(axes[j])
+        plt.tight_layout()
+        st.pyplot(fig)
 
 def plot_correlation_matrix(df):
     numeric_df = df.select_dtypes(include=['number'])
     corr_matrix = numeric_df.corr()
-    plt.figure(figsize=(8, 6))
-    sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt='.2f')
-    plt.title('Correlation Heatmap')
-    st.pyplot()
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt='.2f', ax=ax)
+    ax.set_title('Correlation Heatmap')
+    st.pyplot(fig)
 
 def preprocess_data(X_train, X_test, categorical_columns):
     encoder = OneHotEncoder(handle_unknown='ignore', sparse_output=False)
