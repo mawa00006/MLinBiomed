@@ -177,6 +177,8 @@ if st.session_state.analysis_type == 'Tabular Data Analysis':
                         file_name=f"{model_name}_model.pkl"
                     )
 
+            st.write("Tabular data analysis completed!")
+
 elif st.session_state.analysis_type == 'Medical Imaging Pipeline':
     with content_area.container():
         st.write("Medical Imaging Pipeline functionality has to be implemented.")
