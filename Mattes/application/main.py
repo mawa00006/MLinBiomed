@@ -11,11 +11,18 @@ from io import BytesIO
 from model.Model import Model
 
 import torch
-from torchvision import transforms
 
-to_tensor =transforms.PILToTensor()
 model = Model()
 model.train()
+
+class_dict = {0: "Actinic keratoses and intraepithelial carcinoma",
+              1: "2asal cell carcinoma",
+              2: "Benign keratosis-like lesions",
+              3: "Dermatofibroma",
+              4: "Melanoma",
+              5: "Melanocytic nevi",
+              6: "Vascular lesions"}
+
 
 # Function to convert PIL image to base64 string for HTML rendering
 def pil_image_to_base64(img):
@@ -69,7 +76,7 @@ if zip_file:
 
                     # Store image name, predicted class, and image data
                     image_names.append(file_name)
-                    predicted_classes.append(predicted_class)
+                    predicted_classes.append(class_dict[predicted_class])
 
 
     # Create output datafram
@@ -79,9 +86,13 @@ if zip_file:
     })
 
 
-    # Create an HTML table to display the image, image name, and predicted class
-    table_html = "<table>"
-    table_html += "<tr><th>Image Name</th><th>Image</th><th>Predicted Class</th></tr>"
+    # Create an HTML table to display the image name, image, and predicted class
+    table_html = """
+<div style="display: flex; justify-content: center;">
+    <table>
+        <tr><th>Image Name</th><th>Image</th><th>Predicted Class</th></tr>
+"""
+
 
     for i in range(len(image_names)):
         img_html = f'<img src="data:image/png;base64,{images_base64[i]}" width="100">'
@@ -89,4 +100,4 @@ if zip_file:
 
     table_html += "</table>"
 
-    st.markdown(table_html, unsafe_allow_html=True)
+    st.markdown(table_html, unsafe_allow_html=True, )
