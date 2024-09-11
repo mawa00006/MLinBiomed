@@ -151,9 +151,17 @@ if st.session_state.analysis_type == 'Tabular Data Analysis':
 
                     # Display feature importance for Random Forest
                     if model_name == 'Random Forest':
-                        st.write("Feature Importance:")
-                        fig = px.bar(x=result['feature_importance'], y=X.columns, labels={'x': 'Importance', 'y': 'Feature'})
-                        st.plotly_chart(fig)
+                          feature_importances = result['feature_importance']
+                          feature_importance_df = pd.DataFrame({
+                                'Feature': X.columns,
+                                'Importance': feature_importances
+                                })
+                          feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
+                          fig = px.bar(feature_importance_df, x='Feature', y='Importance', 
+                                       labels={'x': 'Feature', 'y': 'Importance'},
+                                       title='Feature Importances')
+                          st.write("Feature Importance:")
+                          st.plotly_chart(fig)
 
                 # Download options for data and models
                 st.download_button(
