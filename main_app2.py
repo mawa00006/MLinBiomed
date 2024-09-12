@@ -59,20 +59,20 @@ st.markdown("<h3>Welcome to the medical data analysis tool. Choose an option bel
 # Display the carousel
 test_items = [
     dict(
-        title="Machine Learning in Biomedicine",
-        text="<span style='color: white;'>A project at University of Tübingen</span>",
-        img="https://plus.unsplash.com/premium_photo-1682756540097-6a887bbcf9b0?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        link="https://plus.unsplash.com/premium_photo-1682756540097-6a887bbcf9b0?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        title="",
+        text="",
+        img="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Parasagittal_MRI_of_human_head_in_patient_with_benign_familial_macrocephaly_prior_to_brain_injury_%28ANIMATED%29.gif/640px-Parasagittal_MRI_of_human_head_in_patient_with_benign_familial_macrocephaly_prior_to_brain_injury_%28ANIMATED%29.gif",
+        link="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Parasagittal_MRI_of_human_head_in_patient_with_benign_familial_macrocephaly_prior_to_brain_injury_%28ANIMATED%29.gif/640px-Parasagittal_MRI_of_human_head_in_patient_with_benign_familial_macrocephaly_prior_to_brain_injury_%28ANIMATED%29.gif",
     ),
     dict(
-        title="Tabular Data",
-        text="Heart Stroke Data Analysis",
-        img="https://media.istockphoto.com/id/1589448518/de/foto/herz-cardio-puls-linie-herzinfarkt-oder-herzerkrankung-3d-illustration.webp?a=1&b=1&s=612x612&w=0&k=20&c=u6SmAet23ofxAv_CbHJfm7a92JJGzOBd4QP184lA_gM=",
-        link="https://media.istockphoto.com/id/1589448518/de/foto/herz-cardio-puls-linie-herzinfarkt-oder-herzerkrankung-3d-illustration.webp?a=1&b=1&s=612x612&w=0&k=20&c=u6SmAet23ofxAv_CbHJfm7a92JJGzOBd4QP184lA_gM=",
+        title="",
+        text="",
+        img="https://images.unsplash.com/photo-1572996489084-bd293caab387?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZWtnJTIwbW9uaXRvcnxlbnwwfHwwfHx8MA%3D%3D",
+        link="https://images.unsplash.com/photo-1572996489084-bd293caab387?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZWtnJTIwbW9uaXRvcnxlbnwwfHwwfHx8MA%3D%3D",
     ),
     dict(
-        title="Medical Imaging",
-        text="MRI Scan Image",
+        title="",
+        text="",
         img="https://images.unsplash.com/photo-1584555613497-9ecf9dd06f68?q=80&w=2050&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         link="https://images.unsplash.com/photo-1584555613497-9ecf9dd06f68?q=80&w=2050&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     ),
