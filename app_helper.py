@@ -35,6 +35,7 @@ def get_column_types(df):
 def plot_numeric_histograms(df, numeric_cols):
     if numeric_cols:
         fig, ax = plt.subplots(figsize=(15, 10))
+        numeric_cols = [col for col in numeric_cols if col != 'id']
         df[numeric_cols].hist(bins=30, color='skyblue', edgecolor='black', grid=False, ax=ax)
         plt.tight_layout()
         st.pyplot(fig)
@@ -57,6 +58,8 @@ def plot_categorical_histograms(df, categorical_cols):
 
 def plot_correlation_matrix(df):
     numeric_df = df.select_dtypes(include=['number'])
+    if "id" in numeric_df.columns:
+        numeric_df = numeric_df.drop(["id"], axis = 1)
     corr_matrix = numeric_df.corr()
     fig, ax = plt.subplots(figsize=(8, 6))
     sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt='.2f', ax=ax)
@@ -82,6 +85,8 @@ def preprocess_data(X_train, X_test, categorical_columns):
 
 def get_features_and_target(df, target_variable):
     X = df.drop(columns=[target_variable])
+    if "id" in df.columns:
+        X = df.drop(columns=["id",target_variable])
     y = df[target_variable]
     return X, y
 

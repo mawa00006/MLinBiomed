@@ -52,30 +52,32 @@ if 'analysis_type' not in st.session_state:
     st.session_state.analysis_type = None
 
 # Title and welcome message
-st.title("Heart Stroke Analysis")
-st.write("Welcome to the analysis tool. Choose an option below to get started.")
+st.title("Medical Data Analysis Tool")
+st.markdown("<p style='font-size: 14px; color: black;'>by Elisa Maske and Mattes Warning</p>", unsafe_allow_html=True)
+st.markdown("<h3>Welcome to the medical data analysis tool. Choose an option below to get started.</h3>", unsafe_allow_html=True)
 
 # Display the carousel
 test_items = [
     dict(
-        title="Slide 1",
-        text="A tree in the savannah",
-        img="https://www.imperial.ac.uk/news/image/mainnews2012/33304.jpg",
-        link="https://www.imperial.ac.uk/news/image/mainnews2012/33304.jpg",
+        title="Machine Learning in Biomedicine",
+        text="<span style='color: white;'>A project at University of Tübingen</span>",
+        img="https://plus.unsplash.com/premium_photo-1682756540097-6a887bbcf9b0?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        link="https://plus.unsplash.com/premium_photo-1682756540097-6a887bbcf9b0?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     ),
     dict(
-        title="Slide 2",
-        text="A wooden bridge in a forest in Autumn",
-        img="https://th.bing.com/th/id/OIP.pyZ99psA1TuSsKRN6vBl_wHaEK?pid=ImgDet&rs=1",
-        link="https://th.bing.com/th/id/OIP.pyZ99psA1TuSsKRN6vBl_wHaEK?pid=ImgDet&rs=1",
+        title="Tabular Data",
+        text="Heart Stroke Data Analysis",
+        img="https://media.istockphoto.com/id/1589448518/de/foto/herz-cardio-puls-linie-herzinfarkt-oder-herzerkrankung-3d-illustration.webp?a=1&b=1&s=612x612&w=0&k=20&c=u6SmAet23ofxAv_CbHJfm7a92JJGzOBd4QP184lA_gM=",
+        link="https://media.istockphoto.com/id/1589448518/de/foto/herz-cardio-puls-linie-herzinfarkt-oder-herzerkrankung-3d-illustration.webp?a=1&b=1&s=612x612&w=0&k=20&c=u6SmAet23ofxAv_CbHJfm7a92JJGzOBd4QP184lA_gM=",
     ),
     dict(
-        title="Slide 3",
-        text="A distant mountain chain preceded by a sea",
-        img="https://static.startuptalky.com/2021/05/ml-in-healthcare-fi-startuptalky.jpg",
-        link="https://static.startuptalky.com/2021/05/ml-in-healthcare-fi-startuptalky.jpg",
+        title="Medical Imaging",
+        text="MRI Scan Image",
+        img="https://images.unsplash.com/photo-1584555613497-9ecf9dd06f68?q=80&w=2050&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        link="https://images.unsplash.com/photo-1584555613497-9ecf9dd06f68?q=80&w=2050&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     ),
 ]
+
 carousel(items=test_items)
 
 # User choice between options
@@ -178,7 +180,7 @@ if st.session_state.analysis_type == 'Tabular Data Analysis':
                         data=app_helper.download_model(trained_model),
                         file_name=f"{model_name}_model.pkl"
                     )
-                    
+
                 st.write("Tabular data analysis completed!")
 
 
