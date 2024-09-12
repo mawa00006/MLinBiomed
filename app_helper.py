@@ -80,7 +80,7 @@ def preprocess_data(X_train, X_test, categorical_columns):
     X_train_encoded_df = pd.concat([X_train, X_train_encoded_df], axis=1)
     X_test_encoded_df = pd.concat([X_test, X_test_encoded_df], axis=1)
     
-    return X_train_encoded_df, X_test_encoded_df
+    return X_train_encoded_df, X_test_encoded_df, encoder
 
 
 def get_features_and_target(df, target_variable):
@@ -126,18 +126,6 @@ def train_models(selected_models, X_train, y_train, X_test, y_test, param_grids)
     from sklearn.model_selection import GridSearchCV
 
     # Initialize dictionaries to store parameter grids and models
-    """param_grids = {
-        'Logistic Regression': {
-            'C': [0.01, 0.1, 1, 10, 100],
-            'solver': ['liblinear', 'lbfgs'],
-            'class_weight': ['balanced', None]
-        },
-        'Random Forest': {
-            'n_estimators': [50, 100, 200],
-            'max_depth': [5, 10, 20],
-            'class_weight': ['balanced', None]
-        }
-    }"""
     
     models = {
         'Logistic Regression': LogisticRegression(max_iter=1000),
@@ -190,5 +178,35 @@ def download_data(X, y):
     csv = df.to_csv(index=False)
     return StringIO(csv).getvalue()
 
+
 def download_model(model):
     return pickle.dumps(model)
+
+
+### for preditcion part
+
+# Save model to a file
+def save_model(model, file_name):
+    with open(file_name, 'wb') as file:
+        pickle.dump(model, file)
+
+# Load model from a file
+def load_model(uploaded_model):
+    model = pickle.load(uploaded_model)
+    return model
+
+def preprocess_new_data(X_new, categorical_columns, encoder):
+    # Use the saved encoder to transform new data
+    X_new_encoded = encoder.transform(X_new[categorical_columns])
+    X_new_encoded_df = pd.DataFrame(X_new_encoded, columns=encoder.get_feature_names_out(categorical_columns))
+    
+    X_new = X_new.drop(columns=categorical_columns).reset_index(drop=True)
+    X_new_encoded_df = pd.concat([X_new, X_new_encoded_df], axis=1)
+    
+    return X_new_encoded_df
+
+# Download predictions
+def download_predictions(predictions):
+    output = StringIO()
+    pd.DataFrame(predictions).to_csv(output)
+    return output.getvalue()
