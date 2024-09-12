@@ -36,7 +36,7 @@ def plot_numeric_histograms(df, numeric_cols):
     if numeric_cols:
         fig, ax = plt.subplots(figsize=(15, 10))
         numeric_cols = [col for col in numeric_cols if col != 'id']
-        df[numeric_cols].hist(bins=30, color='skyblue', edgecolor='black', grid=False, ax=ax)
+        df[numeric_cols].hist(bins=30, color='darkblue', edgecolor='white', grid=False, ax=ax)
         plt.tight_layout()
         st.pyplot(fig)
 
@@ -47,7 +47,7 @@ def plot_categorical_histograms(df, categorical_cols):
         axes = axes.flatten()
         for i, col in enumerate(categorical_cols):
             ax = axes[i]
-            df[col].value_counts().plot(kind='bar', color='skyblue', edgecolor='black', ax=ax)
+            df[col].value_counts().plot(kind='bar', color='darkblue', edgecolor='white', ax=ax)
             ax.set_title(f'Distribution of {col}')
             ax.set_ylabel('Count')
             ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
