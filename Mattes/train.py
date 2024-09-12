@@ -129,7 +129,6 @@ def main(args):
 
     model = Model().to(device)
     optimizer = optim.Adam(model.parameters())
-    
 
     train(model, optimizer, train_loader, val_loader, args)
 

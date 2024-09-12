@@ -44,7 +44,11 @@ if zip_file:
                     # that I couldn't resolve but this strange way of doing it worked
 
                     # Read image
-                    image = Image.open(file)
+                    try:
+                        image = Image.open(file)
+                    except:
+                        print(file)
+                        continue
                     # Append to output to write to display in table later
                     images_base64.append(pil_image_to_base64(image))
 
