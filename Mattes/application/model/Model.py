@@ -54,9 +54,8 @@ class Encoder(nn.Module):
         out_fc = self.fc(flattened)
         
         return out_fc
-        
-        
-        
+
+
 class Model(nn.Module):
 
     def __init__(self):
@@ -64,33 +63,20 @@ class Model(nn.Module):
         
         self.ImageEncoder = Encoder(input_channels=3)
         self.CannyEncoder = Encoder(input_channels=3)
-        
+
         self.CrossAttention = nn.MultiheadAttention(256, num_heads=16)
-        
+
         self.key_transform = nn.Linear(256, 256)
         self.query_transform = nn.Linear(256, 256)
         self.value_transform = nn.Linear(256, 256)
-        
-        self.fc = nn.Linear(256,7)
-        self.out = nn.Linear(512,7)
-                              
 
-
-
+        self.fc = nn.Linear(256, 7)
+        self.out = nn.Linear(512, 7)
 
     def forward(self, imgs, canny_imgs):
         
         img_encoding = self.ImageEncoder(imgs)
         canny_encoding = self.CannyEncoder(canny_imgs)
-        
-        #key = self.key_transform(img_encoding)
-        #query = self.key_transform(canny_encoding)
-        #value = self.key_transform(img_encoding)
-        
-        #cross_attn_output, attn_output_weights = self.CrossAttention(query, key, value)
-        
-        #cross_attn_output.flatten()
-        #out = self.fc(cross_attn_output)
         
         combined = torch.cat((img_encoding, canny_encoding), dim=1)
         out = self.out(combined)
