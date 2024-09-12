@@ -185,8 +185,6 @@ def train_models(selected_models, X_train, y_train, X_test, y_test, param_grids)
     return results
 
 
-
-
 def download_data(X, y):
     df = pd.concat([X, y], axis=1)
     csv = df.to_csv(index=False)

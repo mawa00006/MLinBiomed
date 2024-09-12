@@ -128,7 +128,8 @@ if st.session_state.analysis_type == 'Tabular Data Analysis':
             st.header("Machine Learning Models")
             
             # Select target variable
-            target_variable = st.selectbox("Select the target variable", df.columns)
+            target_cols = [col for col in df.columns if col != 'id']
+            target_variable = st.selectbox("Select the target variable", target_cols)
             st.write(f"You selected **{target_variable}** as the target variable.")
 
             # Select models for grid search
@@ -152,7 +153,8 @@ if st.session_state.analysis_type == 'Tabular Data Analysis':
 
                 for model_name, result in model_results.items():
                     st.subheader(f"Results for {model_name}")
-                    st.text(result['report'])
+                    st.text("──"+result['report'])
+
 
                     # Display feature importance for Random Forest
                     if model_name == 'Random Forest':
@@ -164,7 +166,8 @@ if st.session_state.analysis_type == 'Tabular Data Analysis':
                           feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
                           fig = px.bar(feature_importance_df, x='Feature', y='Importance', 
                                        labels={'x': 'Feature', 'y': 'Importance'},
-                                       title='Feature Importances')
+                                       title='Feature Importances',
+                                       color_discrete_sequence=['#00008B'])  # Dark blue hex code
                           st.plotly_chart(fig)
 
                 # Download options for data and models
