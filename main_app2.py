@@ -189,7 +189,7 @@ if st.session_state.analysis_type == 'Model Training and Evaluation':
                                         file_name=f"{model_name}_model.pkl"
                                         )
 
-                st.write("Tabular data analysis completed!")
+                st.write("Model training and evaluation completed!")
 
 
 elif st.session_state.analysis_type == 'Prediction and Analysis':
