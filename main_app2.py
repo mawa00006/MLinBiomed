@@ -67,8 +67,8 @@ test_items = [
     dict(
         title="",
         text="",
-        img="https://images.unsplash.com/photo-1572996489084-bd293caab387?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZWtnJTIwbW9uaXRvcnxlbnwwfHwwfHx8MA%3D%3D",
-        link="https://images.unsplash.com/photo-1572996489084-bd293caab387?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZWtnJTIwbW9uaXRvcnxlbnwwfHwwfHx8MA%3D%3D",
+        img="https://upload.wikimedia.org/wikipedia/commons/6/61/Apikal4D.gif?20080313194245",
+        link="https://upload.wikimedia.org/wikipedia/commons/6/61/Apikal4D.gif?20080313194245",
     ),
     dict(
         title="",
