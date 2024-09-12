@@ -1,0 +1,4 @@
+id,gender,age,hypertension,heart_disease,ever_married,work_type,Residence_type,avg_glucose_level,bmi,smoking_status,stroke
+Me,Female,24,0,0,No,Private,Urban,79.53,23,never smoked,0
+My grandma,Female,85,1,1,Yes,Private,Urban,78.44,26,never smoked,0
+My dad,Male,60,0,0,Yes,Private,Urban,78,20,never smoked,0
