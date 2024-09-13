@@ -23,7 +23,7 @@ col1, col2 = st.columns([1, 3])
 with col1:
     st.image('imgs/1.jpg', use_column_width=True)
 with col2:
-    st.markdown("""\"ABasal cell carcinoma is a type of skin cancer that occurs when there is damage to the DNA of basal
+    st.markdown("""\"A Basal cell carcinoma is a type of skin cancer that occurs when there is damage to the DNA of basal
      cells in the top layer, or epidermis, of the skin. They are called basal cells because they are the deepest cells in
       the epidermis. In normal skin, the basal cells are less than one one-hundredth of an inch deep, but once a cancer
        has developed, it will spread deeper.\" ([Source](https://www.yalemedicine.org/conditions/basal-cell-carcinoma))""")
