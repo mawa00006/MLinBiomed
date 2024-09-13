@@ -10,6 +10,21 @@ import streamlit as st
 from PIL import Image
 from utils import *
 from model.Model import Model
+from streamlit_option_menu import option_menu
+from streamlit_extras.switch_page_button import switch_page
+from streamlit_extras.mention import mention
+
+# with st.sidebar:
+#     selected = option_menu(
+#         menu_title=None,
+#         options=["Home", "DermaMNIST", "Model"]
+#     )
+# if selected == "DermaMNIST":
+#     switch_page("dermamnist")
+# if selected == "Model":
+#     switch_page("model")
+#if selected == "Home":
+#    switch_page("main")
 
 # Initialize model
 model = Model()
@@ -18,7 +33,9 @@ model.train()
 
 st.title('Skin Lesion Analysis')
 
-st.markdown(""" * Mattes Warning """)
+mention(label="Mattes Warning",
+        icon="github",
+        url="github.com/mawa00001")
 
 st.markdown(""" Upload a ZIP file containing .jpg or .png images of skin lesions you want to analyse.""")
 
@@ -32,6 +49,7 @@ zip_file = st.file_uploader("Upload images in a zip file.", type="zip")
 if zip_file:
     # Open the uploaded zip file
     with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+        st.success("Successfully uploaded file!")
         # List all files in the zip archive
         file_names = zip_ref.namelist()
 
