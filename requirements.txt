@@ -14,3 +14,5 @@ lxml
 torch
 cv2
 PIL
+io
+pickle
