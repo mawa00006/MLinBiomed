@@ -215,7 +215,7 @@ elif st.session_state.analysis_type == 'Prediction and Analysis':
 
                 # Store 'id' and 'former_target' for later
                 id_column = 'id' if 'id' in df_new_data.columns else None
-                former_target = st.selectbox("Select the former target variable that was also used during the training process", df_new_data.columns)
+                former_target = st.selectbox("Select the former target variable that was also used during the training process", df_new_data.columns, index=11)
                 st.write(f"You selected **{former_target}** as the target variable.")
     
                 # Keep 'id' and drop 'former_target' from the dataset before predictions
