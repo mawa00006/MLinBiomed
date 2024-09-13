@@ -1,0 +1,9 @@
+,Class,Accuracy
+0,Total,0.36
+1,Actinic keratoses and intraepithelial carcinoma,0.08
+2,Basal cell carcinoma,0.27
+3,Benign keratosis-like lesions,0.23
+4,Dermatofibroma,0.04
+5,Melanoma,0.02
+6,Melanocytic nevi,0.47
+7,Vascular lesions,0.14

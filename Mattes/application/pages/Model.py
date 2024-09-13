@@ -1,12 +1,36 @@
 import pandas as pd
 import streamlit as st
+from streamlit_option_menu import option_menu
+from streamlit_extras.switch_page_button import switch_page
+
+# with st.sidebar:
+#     selected = option_menu(
+#         menu_title=None,
+#         options=["Home", "DermaMNIST", "Model"]
+#     )
+# if selected == "DermaMNIST":
+#     switch_page("dermamnist")
+# if selected == "Home":
+#     switch_page("main")
+#
+# selected2 = option_menu( menu_title=None,
+#         options=["Home", "DermaMNIST", "Model"],
+#         orientation="horizontal"
+#     )
+# selected2
 
 
 st.title("Model Architecture")
 
 st.subheader("Dual-Modality CNN")
-st.markdown(""" Our proposed architecture combines two image modalities. It used the original image as well as 
-an edge representation of the image calculated with the Canny Edge algorithm. Both are encoded using an [Encoder](#encoder).""")
+st.markdown("""We propose a dual-modality convolutional neural network (CNN) that integrates two distinct image 
+representations to enhance feature extraction. The model leverages both the raw input image and its corresponding 
+edge map, which is computed using the [Canny edge detection algorithm](https://docs.opencv.org/3.4/da/d22/tutorial_py_canny.html). These two modalities are processed 
+independently through separate [Encoders](#encoder). \n
+
+The architecture consists of two encoder modules: one for the original RGB image and another for the edge 
+representation. The outputs of both encoders are concatenated and passed through a fully connected layer for 
+classification.""")
 st.code("""class Model(nn.Module):
     def __init__(self):
         super(Model, self).__init__()
@@ -25,6 +49,11 @@ st.code("""class Model(nn.Module):
         return out""")
 
 st.subheader("Encoder")
+st.markdown("""
+The Encoder class extracts features from images through two convolutional layers followed 
+by max-pooling, progressively reducing spatial dimensions. The output is flattened and passed through fully connected 
+layers with dropout for regularization, producing a compact feature representation. This structure captures both 
+local and abstract features of the input image.""")
 
 st.code("""class Encoder(nn.Module):
     def __init__(self, input_channels):
@@ -83,12 +112,19 @@ st.code("""class ConvUnit(nn.Module):
 
 st.title("Training Process")
 
-hyperparameters = pd.DataFrame({"Parameter": ["Learning Rate"], "Value": [0.1]})
+hyperparameters = pd.DataFrame({"Parameter": ["Epochs", "Optimizer", "Learning Rate"], "Value": [200, "Adam", 0.001]})
 st.table(hyperparameters)
 
+col1, col2 = st.columns(2)
+with col1:
+    st.image('imgs/train_loss.png', use_column_width=True)
+with col2:
+    st.image('imgs/eval_acc.png', use_column_width=True)
 
 st.title("Evaluation")
 
 df = pd.read_csv("Accuracies.csv")
 
 st.bar_chart(df, x="Class", y="Accuracy", horizontal=True)
+
+# st.download_button("Download predictions", data=, file_name="predictions.csv", mime="text/csv")
