@@ -1,6 +1,6 @@
 # MLinBiomed
 
-# TODO's: Submission to projectuploads folder on Ilias until 23:59
+# Submission to projectuploads folder on Ilias until 23:59
 
 - listing all necessary libraries in requirements.txt (mention that Python 3.10 used for tabular data app)
  
